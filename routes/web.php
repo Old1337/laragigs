@@ -21,5 +21,9 @@ Route::controller(ListingController::class)->group(function () {
 
     Route::get('/', 'index');
 
+    Route::get('/listings/create', 'create');
+
+    Route::post('/listings', 'store');
+
     Route::get('/listings/{listing}', 'show');
 });
