@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class Listing extends Model
 {
@@ -23,6 +23,10 @@ class Listing extends Model
     {
         if ($filter) {
             $query->where($column, 'LIKE', '%' . $filter . '%');
+
+
+            Session::flash('tag', request('tag'));
+            Session::flash('search', request('search'));
         }
     }
 }

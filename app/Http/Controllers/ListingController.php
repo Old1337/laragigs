@@ -13,11 +13,12 @@ use App\Models\Listing;
 use Illuminate\Validation\Rule;
 
 class ListingController extends Controller
+
 {
 
     public function index(): View
     {
-        return view('listings.index', ['listings' => Listing::latest()->filter()->get()]);
+        return view('listings.index', ['listings' => Listing::latest()->filter()->paginate(5)]);
     }
 
     public function show(Listing $listing): View
@@ -34,7 +35,6 @@ class ListingController extends Controller
     public function store(Request $request, Listing $listing): RedirectResponse
     {
         $formFields = $request->validate([
-
             'title' => 'required',
             'company' => ['required', Rule::unique('listings', 'company')],
             'location' => 'required',
@@ -45,6 +45,9 @@ class ListingController extends Controller
 
         ]);
 
+        if ($request->hasFile('logo')) {
+            $formFields['logo'] =  $request->file('logo')->store('logos', 'public');
+        }
         $listing->create($formFields);
 
         return redirect('/')->with('message', 'Listing Created Successfully!');
