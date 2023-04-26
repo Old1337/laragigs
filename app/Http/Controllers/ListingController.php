@@ -34,9 +34,36 @@ class ListingController extends Controller
 
     public function store(Request $request, Listing $listing): RedirectResponse
     {
-        $formFields = $request->validate([
+        $formFields = $this->validateFormFields($request, 'store');
+
+        $formFields = $this->uploadFile($request, $formFields);
+
+        $listing->create($formFields);
+
+        return redirect('/')->with('message', 'Listing Created Successfully!');
+    }
+
+    public function  edit(Listing $listing): View
+    {
+        return view('listings.edit', ['listing' => $listing]);
+    }
+
+    public function update(Request $request, Listing $listing): RedirectResponse
+    {
+        $formFields = $this->validateFormFields($request, 'edit', $listing);
+
+        $formFields = $this->uploadFile($request, $formFields);
+
+        $listing->update($formFields);
+
+        return redirect('/')->with('message', 'Listing updated Successfully!');
+    }
+
+    private function validateFormFields(Request $request, string $action, Listing $listing = null): array
+    {
+        return  $formFields = $request->validate([
             'title' => 'required',
-            'company' => ['required', Rule::unique('listings', 'company')],
+            'company' => ['required', $action === 'store' ? Rule::unique('listings', 'company') :  Rule::unique('listings', 'company')->ignore($listing->id)],
             'location' => 'required',
             'website' => ['required', 'url'],
             'email' => ['required', 'email'],
@@ -44,12 +71,15 @@ class ListingController extends Controller
             'description' => 'required'
 
         ]);
+    }
 
+    private function uploadFile(Request $request, array $form): array
+    {
         if ($request->hasFile('logo')) {
-            $formFields['logo'] =  $request->file('logo')->store('logos', 'public');
+            $logo =  $request->file('logo')->store('logos', 'public');
+            $form['logo'] = $logo;
+            return $form;
         }
-        $listing->create($formFields);
-
-        return redirect('/')->with('message', 'Listing Created Successfully!');
+        return $form;
     }
 }

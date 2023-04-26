@@ -25,5 +25,9 @@ Route::controller(ListingController::class)->group(function () {
 
     Route::post('/listings', 'store');
 
+    Route::get('/listings/{listing}/edit', 'edit');
+
     Route::get('/listings/{listing}', 'show');
+
+    Route::put('/listings/{listing}', 'update');
 });
