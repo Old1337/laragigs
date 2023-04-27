@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 // Controllers
 use App\Http\Controllers\ListingController;
+use App\Http\Controllers\UserController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,17 +19,30 @@ use App\Http\Controllers\ListingController;
 
 
 
-Route::controller(ListingController::class)->group(function () {
+// Route::controller(ListingController::class)->group(function () {
 
-    Route::get('/', 'index');
+//     Route::get('/', 'index');
 
-    Route::get('/listings/create', 'create');
+//     Route::get('/listings/create', 'create');
 
-    Route::post('/listings', 'store');
+//     Route::post('/listings', 'store');
 
-    Route::get('/listings/{listing}/edit', 'edit');
+//     Route::get('/listings/{listing}/edit', 'edit');
 
-    Route::get('/listings/{listing}', 'show');
+//     Route::get('/listings/{listing}', 'show');
 
-    Route::put('/listings/{listing}', 'update');
+//     Route::delete('/listings/{listing}', 'destroy');
+
+//     Route::put('/listings/{listing}', 'update');
+// });
+
+Route::resource('listings', ListingController::class)->except('index');
+Route::get('/', [ListingController::class, 'index'],);
+
+
+Route::controller(UserController::class)->group(function () {
+
+    Route::get('/register', 'create');
+
+    Route::post('/users', 'store');
 });

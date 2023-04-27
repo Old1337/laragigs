@@ -21,16 +21,19 @@ class ListingController extends Controller
         return view('listings.index', ['listings' => Listing::latest()->filter()->paginate(5)]);
     }
 
+
     public function show(Listing $listing): View
     {
 
         return view('listings.show', ['listing' => $listing]);
     }
 
+
     public function create(): View
     {
         return view('listings.create');
     }
+
 
     public function store(Request $request, Listing $listing): RedirectResponse
     {
@@ -43,10 +46,12 @@ class ListingController extends Controller
         return redirect('/')->with('message', 'Listing Created Successfully!');
     }
 
+
     public function  edit(Listing $listing): View
     {
         return view('listings.edit', ['listing' => $listing]);
     }
+
 
     public function update(Request $request, Listing $listing): RedirectResponse
     {
@@ -58,6 +63,15 @@ class ListingController extends Controller
 
         return redirect('/')->with('message', 'Listing updated Successfully!');
     }
+
+
+    public function destroy(Listing $listing): RedirectResponse
+    {
+        $listing->delete();
+
+        return redirect('/')->with('message', 'Listing Deleted Successfully!');
+    }
+
 
     private function validateFormFields(Request $request, string $action, Listing $listing = null): array
     {
@@ -72,6 +86,7 @@ class ListingController extends Controller
 
         ]);
     }
+
 
     private function uploadFile(Request $request, array $form): array
     {
