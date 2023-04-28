@@ -45,4 +45,10 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/register', 'create');
 
     Route::post('/users', 'store');
+
+    Route::get('/login', 'login');
+
+    Route::post('/users/login', 'authenticate');
+
+    Route::post('/logout', 'logout');
 });
