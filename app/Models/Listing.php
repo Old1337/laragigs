@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
 
+//Eloquent RelationShips
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class Listing extends Model
 {
     use HasFactory;
@@ -28,5 +31,11 @@ class Listing extends Model
             Session::flash('tag', request('tag'));
             Session::flash('search', request('search'));
         }
+    }
+
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -36,19 +36,29 @@ use App\Http\Controllers\UserController;
 //     Route::put('/listings/{listing}', 'update');
 // });
 
-Route::resource('listings', ListingController::class)->except('index');
-Route::get('/', [ListingController::class, 'index'],);
+Route::get('/listings/manage', [ListingController::class, 'manage'])->middleware('auth');
+Route::resource('listings', ListingController::class)
+    ->except('index')
+    ->middleware('auth')
+    ->only(['create', 'store', 'edit', 'destroy', 'update', 'show']);
+
+
+Route::get('/', [ListingController::class, 'index']);
+
 
 
 Route::controller(UserController::class)->group(function () {
 
-    Route::get('/register', 'create');
+
+    Route::middleware('guest')->group(function () {
+        Route::get('/register', 'create')->middleware('guest');
+        Route::get('/login', 'login')->name('login');
+    });
+
 
     Route::post('/users', 'store');
 
-    Route::get('/login', 'login');
-
     Route::post('/users/login', 'authenticate');
 
-    Route::post('/logout', 'logout');
+    Route::post('/logout', 'logout')->middleware('auth');
 });

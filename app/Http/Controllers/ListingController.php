@@ -35,13 +35,14 @@ class ListingController extends Controller
     }
 
 
-    public function store(Request $request, Listing $listing): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
+
         $formFields = $this->validateFormFields($request, 'store');
 
         $formFields = $this->uploadFile($request, $formFields);
 
-        $listing->create($formFields);
+        $request->user()->listing()->create($formFields);
 
         return redirect('/')->with('message', 'Listing Created Successfully!');
     }
@@ -49,24 +50,38 @@ class ListingController extends Controller
 
     public function  edit(Listing $listing): View
     {
+        $this->authorize('update', $listing);
+
         return view('listings.edit', ['listing' => $listing]);
     }
 
 
-    public function update(Request $request, Listing $listing): RedirectResponse
+    public function update(Request $request, Listing $listing)
     {
+
+
+        $this->authorize('update', $listing);
+
         $formFields = $this->validateFormFields($request, 'edit', $listing);
 
         $formFields = $this->uploadFile($request, $formFields);
 
-        $listing->update($formFields);
+        $request->user()->listing()->update($formFields);
+
 
         return redirect('/')->with('message', 'Listing updated Successfully!');
     }
 
 
+    public function manage(Request $request): View
+    {
+        return view('listings.manage', ['listings' => $request->user()->listing()->get()]);
+    }
+
     public function destroy(Listing $listing): RedirectResponse
     {
+        $this->authorize('delete', $listing);
+
         $listing->delete();
 
         return redirect('/')->with('message', 'Listing Deleted Successfully!');
